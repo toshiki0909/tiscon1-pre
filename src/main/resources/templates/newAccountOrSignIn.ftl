@@ -7,7 +7,7 @@
                 <div class="col-md-12">
 
                     <ul class="breadcrumb">
-                        <li><a href="#">Home</a>
+                        <li><a href="/">Home</a>
                         </li>
                         <li>New account / Sign in</li>
                     </ul>
@@ -69,14 +69,14 @@
 
                         <hr>
 
-                        <form action="customer-orders.html" method="post">
+                        <form action="/login" method="post">
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email">
+                                <label for="name">Account</label>
+                                <input type="text" name="account" class="form-control" id="account">
                             </div>
                             <div class="form-group">
                                 <label for="password">Password</label>
-                                <input type="password" class="form-control" id="password">
+                                <input type="password" name="password" class="form-control" id="password">
                             </div>
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary"><i class="fa fa-sign-in"></i> Log in</button>

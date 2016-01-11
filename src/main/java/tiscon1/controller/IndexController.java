@@ -18,11 +18,4 @@ public class IndexController {
         model.addAttribute("name", "kawasima2");
         return "index";
     }
-
-
-    @RequestMapping("/a")
-    public ModelAndView index2() {
-        ModelAndView mv = new ModelAndView();
-        return mv;
-    }
 }

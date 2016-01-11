@@ -1,5 +1,6 @@
 package tiscon1.controller;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.domain.Specifications;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import tiscon1.form.AccountForm;
 import tiscon1.form.AccountRegisterForm;
 import tiscon1.form.LoginForm;
 import tiscon1.model.Customer;
@@ -42,8 +44,10 @@ public class AccountController {
                 ));
         if (customer != null) {
             session.setAttribute("principal", new UserPrincipal(customer.getName()));
+            return "redirect:/my/account?id=" + customer.getId();
+        } else {
+            return "newAccountOrSignIn";
         }
-        return "redirect:/my/account?id=";
     }
 
     /**
@@ -70,23 +74,41 @@ public class AccountController {
             return "newAccountOrSignIn";
         }
         Customer customer = new Customer(form.getName(), form.getEmail(), form.getPassword());
-        System.out.println(customer);
         customerRepository.save(customer);
         UserPrincipal principal = new UserPrincipal(form.getName());
         session.setAttribute("principal", principal);
         return "redirect:/my/account?id=" + customer.getId();
     }
 
-    @RequestMapping("/my/account")
-    public String mypage(@RequestParam("id") Long customerId,
-                         @ModelAttribute("principal")UserPrincipal principal,
+    @RequestMapping(value="/my/account", method=RequestMethod.GET)
+    public String editAccount(@RequestParam("id") Long customerId,
+                         @ModelAttribute("principal") UserPrincipal principal,
                          Model model) {
         if (customerRepository.exists(customerId)) {
             Customer customer = customerRepository.findOne(customerId);
             model.addAttribute("customer", customer);
+            AccountForm accountForm = new AccountForm();
+            BeanUtils.copyProperties(customer, accountForm);
+            model.addAttribute("accountForm", accountForm);
             return "customerAccount";
         } else {
             return "error";
         }
     }
+
+    @RequestMapping(value="/my/account", method=RequestMethod.POST)
+    public String saveAccount(@Validated AccountForm form, BindingResult bindingResult) {
+        return "customerAccount";
+    }
+
+    @RequestMapping("/my/orders")
+    public String showOrders(@ModelAttribute("principal") UserPrincipal principal) {
+        return "customerOrders";
+    }
+
+    @RequestMapping("/my/wishlist")
+    public String showWishlist(@ModelAttribute("principal") UserPrincipal principal) {
+        return "customerWishlist";
+    }
+
 }
