@@ -37,7 +37,7 @@
                                 <a href="/my/account"><i class="fa fa-user"></i> My account</a>
                             </li>
                             <li>
-                                <a href="/my/signout"><i class="fa fa-sign-out"></i> Logout</a>
+                                <a href="/logout"><i class="fa fa-sign-out"></i> Logout</a>
                             </li>
                         </ul>
                     </div>
