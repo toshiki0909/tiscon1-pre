@@ -19,6 +19,7 @@ import tiscon1.model.Customer;
 import tiscon1.model.UserPrincipal;
 import tiscon1.repository.CustomerRepository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -43,8 +44,8 @@ public class AccountController {
                         cb.equal(root.get("password"), form.getPassword())
                 ));
         if (customer != null) {
-            session.setAttribute("principal", new UserPrincipal(customer.getName()));
-            return "redirect:/my/account?id=" + customer.getId();
+            session.setAttribute("principal", new UserPrincipal(customer.getId(), customer.getName()));
+            return "redirect:/my/account";
         } else {
             return "newAccountOrSignIn";
         }
@@ -75,17 +76,16 @@ public class AccountController {
         }
         Customer customer = new Customer(form.getName(), form.getEmail(), form.getPassword());
         customerRepository.save(customer);
-        UserPrincipal principal = new UserPrincipal(form.getName());
+        UserPrincipal principal = new UserPrincipal(customer.getId(), form.getName());
         session.setAttribute("principal", principal);
-        return "redirect:/my/account?id=" + customer.getId();
+        return "redirect:/my/account";
     }
 
     @RequestMapping(value="/my/account", method=RequestMethod.GET)
-    public String editAccount(@RequestParam("id") Long customerId,
-                         @ModelAttribute("principal") UserPrincipal principal,
-                         Model model) {
-        if (customerRepository.exists(customerId)) {
-            Customer customer = customerRepository.findOne(customerId);
+    public String editAccount(Model model, HttpSession session) {
+        UserPrincipal principal = (UserPrincipal) session.getAttribute("principal");
+        if (customerRepository.exists(principal.getId())) {
+            Customer customer = customerRepository.findOne(principal.getId());
             model.addAttribute("customer", customer);
             AccountForm accountForm = new AccountForm();
             BeanUtils.copyProperties(customer, accountForm);

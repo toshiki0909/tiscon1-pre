@@ -10,4 +10,4 @@ import tiscon1.model.Customer;
  */
 @Repository
 public interface CustomerRepository extends JpaSpecificationExecutor<Customer>, JpaRepository<Customer, Long> {
-}
+        }
